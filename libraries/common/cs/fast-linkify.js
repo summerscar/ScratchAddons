@@ -1,6 +1,8 @@
 // Note: the regex below contains catastrophic backtracking.
 // However, if someone wanted to crash the website, there are many other (and better) ways.
 // Note that the regex is grouped for split() support.
+
+// 替换 url 文本为 a 标签
 const getURLRegex = () => /((?:https?:\/\/)?(?:[\w-]+\.)+(?:xn--[a-zA-Z\d]+|[a-zA-Z]{2,})(?:\/[^\s"<>\\^`{|}]*)?)/g;
 
 const _linkify = (child) => {

@@ -112,8 +112,10 @@ const cs = {
     });
   },
 };
+// 暴露出  comlinkIframe1  comlinkIframe2  以及  cs 对象,  在 content-scripts/inject/module.js 接收 cs 对象
 Comlink.expose(cs, Comlink.windowEndpoint(comlinkIframe1.contentWindow, comlinkIframe2.contentWindow));
 
+//  这里应该在 manifest 中加载了呀
 const pageComlinkScript = document.createElement("script");
 pageComlinkScript.src = chrome.runtime.getURL("libraries/thirdparty/cs/comlink.js");
 document.documentElement.appendChild(pageComlinkScript);
@@ -126,15 +128,18 @@ moduleScript.src = chrome.runtime.getURL("content-scripts/inject/module.js");
   await new Promise((resolve) => {
     moduleScript.addEventListener("load", resolve);
   });
+  //  等待加载完  content-scripts/inject/module.js， 获取 comlinkIframe3, comlinkIframe4，   page 数据在 content-scripts/inject/module.js 中暴露
   _page_ = Comlink.wrap(Comlink.windowEndpoint(comlinkIframe3.contentWindow, comlinkIframe4.contentWindow));
 })();
 
+// 加载 module.js
 document.documentElement.appendChild(moduleScript);
 
 let initialUrl = location.href;
 let path = new URL(initialUrl).pathname.substring(1);
 if (path[path.length - 1] !== "/") path += "/";
 const pathArr = path.split("/");
+// 跳转 https://scratch.mit.edu/scratch-addons-extension/settings/ 至 插件设置页
 if (pathArr[0] === "scratch-addons-extension") {
   if (pathArr[1] === "settings") {
     let url = chrome.runtime.getURL(`webpages/settings/index.html${window.location.search}`);
@@ -142,6 +147,10 @@ if (pathArr[0] === "scratch-addons-extension") {
     chrome.runtime.sendMessage({ replaceTabWithUrl: url });
   }
 }
+// bug 反馈页 增加提示
+// https://scratch.mit.edu/discuss/3/topic/add/
+// Message added by the Scratch Addons extension: make sure the bug you're about to report still happens when all browser extensions are disabled,
+// including Scratch Addons. If you believe a bug is caused by Scratch Addons, please report it here.
 if (path === "discuss/3/topic/add/") {
   window.addEventListener("load", () => forumWarning("forumWarning"));
 } else if (path.startsWith("discuss/topic/")) {

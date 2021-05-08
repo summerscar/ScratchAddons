@@ -285,6 +285,7 @@ export default async ({ addon, console, msg }) => {
       isWaitingForFlag = false;
       waitingForFlagFunc = abortController = null;
       const stream = new MediaStream();
+      // 录制 canvas   captureStream
       const videoStream = vm.runtime.renderer.canvas.captureStream();
       stream.addTrack(videoStream.getVideoTracks()[0]);
 
@@ -303,6 +304,7 @@ export default async ({ addon, console, msg }) => {
       if (opts.audioEnabled || opts.micEnabled) {
         stream.addTrack(dest.stream.getAudioTracks()[0]);
       }
+      //  https://developer.mozilla.org/zh-CN/docs/Web/API/MediaRecorder
       recorder = new MediaRecorder(stream, { mimeType: "video/webm" });
       recorder.ondataavailable = (e) => {
         recordBuffer.push(e.data);
