@@ -220,6 +220,8 @@ function removeAddonStyles(addonId) {
   // Instead of actually removing the style/link element, we just disable it.
   // That way, if the addon needs to be reenabled, it can just enable that style/link element instead of readding it.
   // This helps with load times for link elements.
+
+  // style 标签可以通过 disable 属性禁用
   document.querySelectorAll(`[data-addon-id='${addonId}']`).forEach((style) => (style.disabled = true));
 }
 
@@ -463,7 +465,8 @@ function forumWarning(key) {
     errorList.appendChild(addonError);
   }
 }
-
+// 创建版本更新通知    chrome.storage.local.get bannerSettings 判断上次通知版本
+// 见  /note/img/updatebanner.png
 const showBanner = () => {
   const makeBr = () => document.createElement("br");
 

@@ -113,6 +113,10 @@ const page = {
 };
 Comlink.expose(page, Comlink.windowEndpoint(comlinkIframe4.contentWindow, comlinkIframe3.contentWindow));
 
+// 检测dom元素是否已加载
+// pending 保存任务队列
+// seen 为已查询过的 el
+// condition  通过函数判断是否跳过这次dom变化
 class SharedObserver {
   constructor() {
     this.inactive = true;
@@ -129,6 +133,7 @@ class SharedObserver {
           break;
         }
       }
+      // 所有任务完成 disconnect
       if (this.pending.size === 0) {
         this.inactive = true;
         this.observer.disconnect();
@@ -241,7 +246,7 @@ history.replaceState = function () {
   bodyIsEditorClassCheck();
   return returnValue;
 };
-
+//  扩展 pushState 方法， 向每一个 tab emit urlChange
 const originalPushState = history.pushState;
 history.pushState = function () {
   const oldUrl = location.href;
@@ -265,6 +270,7 @@ window.addEventListener("popstate", () => {
   bodyIsEditorClassCheck();
 });
 
+// 整理出所有 .xx_xx_xx 的 scratch-gui css
 function loadClasses() {
   scratchAddons.classNames.arr = [
     ...new Set(
@@ -296,6 +302,8 @@ function loadClasses() {
   ];
   scratchAddons.classNames.loaded = true;
 
+  // 替换掉上次未处理成功的 scratchclass
+  //  classlist.replace api  可以直接替换classname
   const fixPlaceHolderClasses = () =>
     document.querySelectorAll("[class*='scratchAddonsScratchClass/']").forEach((el) => {
       [...el.classList]
@@ -313,6 +321,7 @@ function loadClasses() {
     });
 
   fixPlaceHolderClasses();
+  // 每次页面变化处理 laceHolderClasses
   new MutationObserver(() => fixPlaceHolderClasses()).observe(document.documentElement, {
     attributes: false,
     childList: true,
@@ -320,6 +329,7 @@ function loadClasses() {
   });
 }
 
+//  title tag 加载完后 处理一次 classname
 if (document.querySelector("title")) loadClasses();
 else {
   const stylesObserver = new MutationObserver((mutationsList) => {
