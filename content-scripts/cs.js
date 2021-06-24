@@ -46,6 +46,7 @@ const onResponse = (res) => {
     }
   }
 };
+// 进入初始化流程 发送  contentScriptReady
 chrome.runtime.sendMessage({ contentScriptReady: { url: location.href } }, onResponse);
 
 const DOLLARS = ["$1", "$2", "$3", "$4", "$5", "$6", "$7", "$8", "$9"];
@@ -369,6 +370,8 @@ async function onInfoAvailable({ globalState: globalStateMsg, addonsWithUserscri
   _page_.addonsWithUserscripts = addonsWithUserscripts;
   _page_.dataReady = true;
 
+  // TODO: 启动插件
+  // 监听来自 background 的 message
   chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.newGlobalState) {
       _page_.globalState = request.newGlobalState;

@@ -14,12 +14,15 @@ const _globalState = {
   addonSettings: {},
 };
 
+
+// proxy handler 类
 class StateProxy {
   constructor(name = "scratchAddons.globalState") {
     this.name = name;
   }
   get(target, key) {
     if (key === "_target") return target;
+    // 如果是obejct 返回代理 object 对象
     if (typeof target[key] === "object" && target[key] !== null) {
       return new Proxy(target[key], new StateProxy(`${this.name}.${key}`));
     } else {
@@ -29,6 +32,7 @@ class StateProxy {
   set(target, key, value) {
     const oldValue = target[key];
     target[key] = value;
+    // 通知所有 tab   chrome.tabs.sendMessage
     messageForAllTabs({ newGlobalState: _globalState });
 
     if (JSON.stringify(oldValue) !== JSON.stringify(value)) {
