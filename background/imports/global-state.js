@@ -14,7 +14,6 @@ const _globalState = {
   addonSettings: {},
 };
 
-
 // proxy handler 类
 class StateProxy {
   constructor(name = "scratchAddons.globalState") {
