@@ -1,5 +1,5 @@
 import Addon from "../../addon-api/content-script/Addon.js";
-
+// 运行 addons
 export default async function runAddonUserscripts({ addonId, scripts, enabledLate = false }) {
   const addonObj = new Addon({ id: addonId, enabledLate });
   addonObj.auth._update(scratchAddons.session);

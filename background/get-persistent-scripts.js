@@ -1,3 +1,4 @@
+// 加载需要在 background 持久运行的 Addon
 import runPersistentScripts from "./imports/run-persistent-scripts.js";
 
 if (scratchAddons.localState.allReady) getPersistentScripts();

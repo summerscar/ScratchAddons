@@ -17,6 +17,8 @@ export default async function runPersistentScripts(addonId) {
     executePersistentScripts({ addonId, permissions, scriptUrls: manifest.persistentScripts });
 }
 
+// 运行 addon 的 background script
+
 async function executePersistentScripts({ addonId, permissions, scriptUrls }) {
   const addonObjReal = new Addon({ id: addonId, permissions });
   const addonObjRevocable = Proxy.revocable(addonObjReal, {});

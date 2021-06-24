@@ -182,6 +182,7 @@ async function requestMsgCount() {
   pendingPromises.msgCount = [];
 }
 
+//  初始化加载插件
 function onDataReady() {
   const addons = page.addonsWithUserscripts;
 

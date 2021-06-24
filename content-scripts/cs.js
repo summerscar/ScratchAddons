@@ -32,6 +32,8 @@ const onMessageBackgroundReady = (request, sender, sendResponse) => {
   }
 };
 chrome.runtime.onMessage.addListener(onMessageBackgroundReady);
+
+// get-userscripts 中 line 233 的回调，接收需要启动的插件信息
 const onResponse = (res) => {
   if (res && !receivedResponse) {
     console.log("[Message from background]", res);
@@ -368,6 +370,7 @@ async function onInfoAvailable({ globalState: globalStateMsg, addonsWithUserscri
   _page_.globalState = globalState;
   _page_.l10njson = getL10NURLs();
   _page_.addonsWithUserscripts = addonsWithUserscripts;
+  // 触发 module.js 中的 onDataReady，加载需要启动的插件
   _page_.dataReady = true;
 
   // TODO: 启动插件

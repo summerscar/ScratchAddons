@@ -113,6 +113,7 @@ async function getAddonData({ addonId, manifest, url }) {
   for (const style of manifest.userstyles || []) {
     if (userscriptMatches({ url }, style, addonId))
       if (manifest.injectAsStyleElt) {
+        // injectAsStyleElt  读取 style 文本直接插入 style 标签
         // Reserve index in array to avoid race conditions (#700)
         const arrLength = userstyles.push(null);
         const indexToUse = arrLength - 1;
@@ -155,6 +156,7 @@ async function getContentScriptInfo(url) {
     const promise = getAddonData({ addonId, manifest, url });
     promises.push(promise);
     const { userscripts, userstyles, cssVariables } = await promise;
+    // 整理需要开启的 addon
     if (userscripts.length) data.addonsWithUserscripts.push({ addonId, scripts: userscripts });
 
     if (userstyles.length)
@@ -184,9 +186,12 @@ const csInfoCache = new Map();
 // obviously happens before the content script has a chance to send us a message.
 // However, SA should work just fine even if this event does not trigger
 // (example: on browser startup, with a Scratch page opening on startup).
+
+// 监测页面载入
 chrome.webRequest.onBeforeRequest.addListener(
   async (request) => {
     if (!scratchAddons.localState.allReady) return;
+    // 生成标识： `${tabId}/${frameId}@${url}`;
     const identity = createCsIdentity({ tabId: request.tabId, frameId: request.frameId, url: request.url });
     const loadingObj = { loading: true };
     csInfoCache.set(identity, loadingObj);
