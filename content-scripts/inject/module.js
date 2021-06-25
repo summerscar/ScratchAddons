@@ -36,6 +36,7 @@ const comlinkIframe1 = document.getElementById("scratchaddons-iframe-1");
 const comlinkIframe2 = document.getElementById("scratchaddons-iframe-2");
 const comlinkIframe3 = document.getElementById("scratchaddons-iframe-3");
 const comlinkIframe4 = document.getElementById("scratchaddons-iframe-4");
+// 在 imframe1 context 中，向 iframe2 获取 cs 对象
 const _cs_ = Comlink.wrap(Comlink.windowEndpoint(comlinkIframe2.contentWindow, comlinkIframe1.contentWindow));
 
 const page = {
@@ -111,6 +112,7 @@ const page = {
     this.isFetching = false;
   },
 };
+// 从 frame3 context 中，向 iframe4 暴露 page
 Comlink.expose(page, Comlink.windowEndpoint(comlinkIframe4.contentWindow, comlinkIframe3.contentWindow));
 
 // 检测dom元素是否已加载

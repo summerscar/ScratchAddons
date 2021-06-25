@@ -61,6 +61,9 @@ const promisify =
 let _page_ = null;
 let globalState = null;
 
+// 通过 comlink 绕过 contentscript 在沙盒中运行的 上下文 限制
+// 将 contentscript 中的部分环境向 文档流 中暴露
+// 同时接收 文档流 中向 contentscript 传送的数据
 const comlinkIframesDiv = document.createElement("div");
 comlinkIframesDiv.id = "scratchaddons-iframes";
 const comlinkIframe1 = document.createElement("iframe");
@@ -115,7 +118,7 @@ const cs = {
     });
   },
 };
-// 暴露出  comlinkIframe1  comlinkIframe2  以及  cs 对象,  在 content-scripts/inject/module.js 接收 cs 对象
+// contentscript 对象在 iframe2 内, 向 iframe1 暴露
 Comlink.expose(cs, Comlink.windowEndpoint(comlinkIframe1.contentWindow, comlinkIframe2.contentWindow));
 
 //  这里应该在 manifest 中加载了呀
@@ -131,7 +134,9 @@ moduleScript.src = chrome.runtime.getURL("content-scripts/inject/module.js");
   await new Promise((resolve) => {
     moduleScript.addEventListener("load", resolve);
   });
-  //  等待加载完  content-scripts/inject/module.js， 获取 comlinkIframe3, comlinkIframe4，   page 数据在 content-scripts/inject/module.js 中暴露
+  //  等待加载完  content-scripts/inject/module.js，
+  //  使用 comlinkIframe4 context 从 comlinkIframe3 获取 page
+  //  page 数据在 content-scripts/inject/module.js 中暴露
   _page_ = Comlink.wrap(Comlink.windowEndpoint(comlinkIframe3.contentWindow, comlinkIframe4.contentWindow));
 })();
 
