@@ -39,7 +39,7 @@ async function executePersistentScripts({ addonId, permissions, scriptUrls }) {
     );
     return clearInterval(intervalId);
   };
-   // 包装原生 setTimeout，保存任务Id 执行后立即清除当前 setTimeout
+  // 包装原生 setTimeout，保存任务Id 执行后立即清除当前 setTimeout
   const setTimeoutFunc = function (func, interval) {
     const timeoutId = setTimeout(function () {
       func();
@@ -87,7 +87,7 @@ async function executePersistentScripts({ addonId, permissions, scriptUrls }) {
       scratchAddons.l10n.get(key.startsWith("/") ? key.slice(1) : `${addonId}/${key}`, placeholders);
     msg.locale = scratchAddons.l10n.locale;
     module.default({
-      addon: addonObj,   // 传入被 proxy 后的addon实例
+      addon: addonObj, // 传入被 proxy 后的addon实例
       global: globalObj,
       console: { ...console, log, warn },
       setTimeout: setTimeoutFunc,
