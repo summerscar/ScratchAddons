@@ -61,9 +61,14 @@ const promisify =
 let _page_ = null;
 let globalState = null;
 
-// 通过 comlink 绕过 contentscript 在沙盒中运行的 上下文 限制
-// 将 contentscript 中的部分环境向 文档流 中暴露
-// 同时接收 文档流 中向 contentscript 传送的数据
+/*
+  https://github.com/ScratchAddons/ScratchAddons/pull/1928/files#diff-bef2431b2efb834598d38b037e68232dcf2627175464ddcb7f9aa83c09801070L118
+  原来使用 template, 将变量输出至节点属性进行共享数据
+
+  通过 comlink 绕过 contentscript 在沙盒中运行的 上下文 限制
+  将 contentscript 中的部分环境向 文档流 中暴露
+  同时接收 文档流 中向 contentscript 传送的数据
+*/
 const comlinkIframesDiv = document.createElement("div");
 comlinkIframesDiv.id = "scratchaddons-iframes";
 const comlinkIframe1 = document.createElement("iframe");
@@ -121,7 +126,7 @@ const cs = {
 // contentscript 对象在 iframe2 内, 向 iframe1 暴露
 Comlink.expose(cs, Comlink.windowEndpoint(comlinkIframe1.contentWindow, comlinkIframe2.contentWindow));
 
-//  这里应该在 manifest 中加载了呀
+// 在 web page中也加载 comlink
 const pageComlinkScript = document.createElement("script");
 pageComlinkScript.src = chrome.runtime.getURL("libraries/thirdparty/cs/comlink.js");
 document.documentElement.appendChild(pageComlinkScript);

@@ -14,6 +14,7 @@ export default class BackgroundScriptAddon extends Addon {
     const { permissions } = info;
     this._timeouts = [];
     this._intervals = [];
+    // _restart 方法在新建实例后才会被赋值
     this.self.restart = () => this._restart();
     if (permissions) {
       if (permissions.includes("notifications")) this.notifications = new Notifications(this);

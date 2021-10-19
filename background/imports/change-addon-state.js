@@ -8,12 +8,14 @@ import runPersistentScripts from "./run-persistent-scripts.js";
  */
 export default (addonId, newState) => {
   scratchAddons.localState.addonsEnabled[addonId] = newState;
+  // 记录 addons 开启列表
   chrome.storage.sync.set({
     addonsEnabled: scratchAddons.localState.addonsEnabled,
   });
   const { manifest } = scratchAddons.manifests.find((addon) => addon.addonId === addonId);
   const { dynamicEnable, dynamicDisable } = manifest;
   if (newState) {
+    // dynamicEnable、dynamicDisable 才会执行加载
     if (dynamicEnable || dynamicDisable) {
       scratchAddons.localEvents.dispatchEvent(new CustomEvent("addonDynamicEnable", { detail: { addonId, manifest } }));
     }
@@ -27,6 +29,7 @@ export default (addonId, newState) => {
     const addonObjs = scratchAddons.addonObjects.filter((addonObj) => addonObj.self.id === addonId);
     if (addonObjs) {
       addonObjs.forEach((addonObj) => {
+        // 调用 _kill
         addonObj.self.dispatchEvent(new CustomEvent("disabled"));
         addonObj._kill();
       });
