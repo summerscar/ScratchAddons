@@ -58,7 +58,7 @@ const promisify =
   (...args) =>
     new Promise((resolve) => callbackFn(...args, resolve));
 
-    promisify(chrome.storage.local.get.bind(chrome.storage.local))(["bannerSettings"]);
+promisify(chrome.storage.local.get.bind(chrome.storage.local))(["bannerSettings"]);
 
 let _page_ = null;
 let globalState = null;
