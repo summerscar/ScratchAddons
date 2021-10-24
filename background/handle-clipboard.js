@@ -7,7 +7,7 @@ const dataURLToArrayBuffer = function (dataURL) {
   }
   return arrayBuffer;
 };
-
+// 复制 image 数据至剪贴板
 if (typeof browser !== "undefined") {
   // Firefox
   browser.runtime.onMessage.addListener(function (request) {

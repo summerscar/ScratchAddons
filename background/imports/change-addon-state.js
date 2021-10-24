@@ -16,6 +16,7 @@ export default (addonId, newState) => {
   const { dynamicEnable, dynamicDisable } = manifest;
   if (newState) {
     // dynamicEnable、dynamicDisable 才会执行加载
+    // 先通知启动 contentscript
     if (dynamicEnable || dynamicDisable) {
       scratchAddons.localEvents.dispatchEvent(new CustomEvent("addonDynamicEnable", { detail: { addonId, manifest } }));
     }

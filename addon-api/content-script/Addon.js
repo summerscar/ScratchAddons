@@ -14,6 +14,8 @@ export default class UserscriptAddon extends Addon {
   constructor(info) {
     super(info);
     this._addonId = info.id;
+    // 'chrome-extension://jalcdeefpiaoljneoabnhaddpimonpac/'
+    // https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Statements/import.meta
     this.__path = `${new URL(import.meta.url).origin}/`;
     this.tab = new Tab(info);
     this.auth.dispose();

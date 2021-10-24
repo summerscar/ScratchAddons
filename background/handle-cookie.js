@@ -1,4 +1,5 @@
 // Remove Set-Cookie header that forces logout when they should not
+// https://github.com/ScratchAddons/ScratchAddons/issues/331 fix 一个scratch bug
 const specs = ["responseHeaders", "blocking"];
 if (Object.prototype.hasOwnProperty.call(chrome.webRequest.OnBeforeSendHeadersOptions, "EXTRA_HEADERS")) {
   specs.push("extraHeaders");

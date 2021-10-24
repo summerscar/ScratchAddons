@@ -58,6 +58,8 @@ const promisify =
   (...args) =>
     new Promise((resolve) => callbackFn(...args, resolve));
 
+    promisify(chrome.storage.local.get.bind(chrome.storage.local))(["bannerSettings"]);
+
 let _page_ = null;
 let globalState = null;
 
@@ -124,6 +126,7 @@ const cs = {
   },
 };
 // contentscript 对象在 iframe2 内, 向 iframe1 暴露
+// 使用 iframe2 addeventlistener  iframe1 postmessage,将 contentscript 由 iframe2 向 iframe1 共享
 Comlink.expose(cs, Comlink.windowEndpoint(comlinkIframe1.contentWindow, comlinkIframe2.contentWindow));
 
 // 在 web page中也加载 comlink
@@ -131,6 +134,7 @@ const pageComlinkScript = document.createElement("script");
 pageComlinkScript.src = chrome.runtime.getURL("libraries/thirdparty/cs/comlink.js");
 document.documentElement.appendChild(pageComlinkScript);
 
+// page context 中加载 module.js
 const moduleScript = document.createElement("script");
 moduleScript.type = "module";
 moduleScript.src = chrome.runtime.getURL("content-scripts/inject/module.js");

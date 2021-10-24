@@ -36,7 +36,7 @@ const comlinkIframe1 = document.getElementById("scratchaddons-iframe-1");
 const comlinkIframe2 = document.getElementById("scratchaddons-iframe-2");
 const comlinkIframe3 = document.getElementById("scratchaddons-iframe-3");
 const comlinkIframe4 = document.getElementById("scratchaddons-iframe-4");
-// 在 imframe1 context 中，向 iframe2 获取 cs 对象
+// 使用 iframe1 context addeventlistener，从 iframe2 获取 cs 对象
 const _cs_ = Comlink.wrap(Comlink.windowEndpoint(comlinkIframe2.contentWindow, comlinkIframe1.contentWindow));
 
 const page = {
@@ -256,6 +256,7 @@ history.pushState = function () {
   const newUrl = arguments[2] ? new URL(arguments[2], document.baseURI).href : oldUrl;
   const returnValue = originalPushState.apply(history, arguments);
   _cs_.url = newUrl;
+
   for (const eventTarget of scratchAddons.eventTargets.tab) {
     eventTarget.dispatchEvent(new CustomEvent("urlChange", { detail: { oldUrl, newUrl } }));
   }

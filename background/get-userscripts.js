@@ -2,8 +2,10 @@ import changeAddonState from "./imports/change-addon-state.js";
 import { getMissingOptionalPermissions } from "./imports/util.js";
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+  // 页面重定向
   if (request.replaceTabWithUrl) chrome.tabs.update(sender.tab.id, { url: request.replaceTabWithUrl });
   else if (request.getEnabledAddons) {
+    // 查询某一tag下启用的插件
     let enabled = Object.keys(scratchAddons.localState.addonsEnabled).filter(
       (addonId) => scratchAddons.localState.addonsEnabled[addonId]
     );
@@ -28,6 +30,7 @@ scratchAddons.localEvents.addEventListener("addonDynamicEnable", ({ detail }) =>
             (async () => {
               const { userscripts, userstyles, cssVariables } = await getAddonData({ addonId, url: res, manifest });
               if (userscripts.length || userstyles.length) {
+                // 发送至 contentscript
                 chrome.tabs.sendMessage(
                   tab.id,
                   {
@@ -299,6 +302,7 @@ chrome.tabs.query({}, (tabs) =>
   })
 );
 
+// 处理插件中的 match 配置
 // Pathname patterns. Make sure NOT to set global flag!
 // Don't forget ^ and $
 const WELL_KNOWN_PATTERNS = {

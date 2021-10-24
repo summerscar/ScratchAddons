@@ -1,4 +1,7 @@
 function injectRedux() {
+  // 配合 scratch-gui app-state-hoc.js
+  // const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
   window.__scratchAddonsRedux = {};
   if (typeof window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ !== "undefined") {
     return console.warn(
@@ -61,6 +64,7 @@ fix this warning."
         return nextReturn;
       };
     }
+    // enhancer 参数增加一个自定义 middleware，返回一个兼容的 compose 实现
     args.splice(1, 0, ReDucks.applyMiddleware(middleware));
     return ReDucks.compose.apply(this, args);
   };

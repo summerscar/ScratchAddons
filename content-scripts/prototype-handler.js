@@ -7,6 +7,7 @@ function injectPrototype() {
   Function.prototype.bind = function (...args) {
     if (Function.prototype.bind === oldBind) {
       // Just in case some code stores the bind function once on startup, then always uses it.
+      // TODO： 不清楚如何跳入此处
       return oldBind.apply(this, args);
     } else if (
       args[0] &&
