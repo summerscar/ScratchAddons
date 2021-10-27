@@ -364,7 +364,8 @@ function getL10NURLs() {
   if (!urls.includes(enJSON)) urls.push(enJSON);
   return urls;
 }
-
+// 问题就是这个回调的执行时机
+// 通知 page script 加载插件
 async function onInfoAvailable({ globalState: globalStateMsg, addonsWithUserscripts, addonsWithUserstyles }) {
   // In order for the "everLoadedAddons" not to change when "addonsWithUserscripts" changes, we stringify and parse
   const everLoadedAddons = JSON.parse(JSON.stringify(addonsWithUserscripts));
@@ -377,6 +378,7 @@ async function onInfoAvailable({ globalState: globalStateMsg, addonsWithUserscri
     await new Promise((resolve) => {
       // We're registering this load event after the load event that
       // sets _page_, so we can guarantee _page_ exists now
+      // 保证 _page_获取， 上面的 load 事件被卡住的情况
       moduleScript.addEventListener("load", resolve);
     });
   }
