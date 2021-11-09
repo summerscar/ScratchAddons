@@ -25,6 +25,7 @@ const console = {
 
 let pseudoUrl; // Fake URL to use if response code isn't 2xx
 
+// contentScriptReady后， 注册 onResponse 回调
 let receivedResponse = false;
 const onMessageBackgroundReady = (request, sender, sendResponse) => {
   if (request === "backgroundListenerReady" && !receivedResponse) {
@@ -48,6 +49,7 @@ const onResponse = (res) => {
     }
   }
 };
+// 如果 background get-userscripts 消息通知早于 contentscript 监听设置， 主动通知 background
 // 进入初始化流程 发送  contentScriptReady
 chrome.runtime.sendMessage({ contentScriptReady: { url: location.href } }, onResponse);
 
@@ -364,7 +366,7 @@ function getL10NURLs() {
   if (!urls.includes(enJSON)) urls.push(enJSON);
   return urls;
 }
-// 问题就是这个回调的执行时机
+// 在确保contentscript与background可通信情况下执行
 // 通知 page script 加载插件
 async function onInfoAvailable({ globalState: globalStateMsg, addonsWithUserscripts, addonsWithUserstyles }) {
   // In order for the "everLoadedAddons" not to change when "addonsWithUserscripts" changes, we stringify and parse

@@ -190,7 +190,7 @@ const csInfoCache = new Map();
 // However, SA should work just fine even if this event does not trigger
 // (example: on browser startup, with a Scratch page opening on startup).
 
-// 监测页面载入
+// 监测页面载入，存储 contentscript 所需插件信息
 chrome.webRequest.onBeforeRequest.addListener(
   async (request) => {
     if (!scratchAddons.localState.allReady) return;
@@ -232,6 +232,7 @@ chrome.alarms.onAlarm.addListener((alarm) => {
   }
 });
 
+// 页面载入，填充 statusCode 信息，准备发送给 contentscript
 chrome.webRequest.onResponseStarted.addListener(
   (request) => {
     const identity = createCsIdentity({ tabId: request.tabId, frameId: request.frameId, url: request.url });
@@ -257,6 +258,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     const getCacheEntry = () => csInfoCache.get(identity);
     let cacheEntry = getCacheEntry();
     if (cacheEntry) {
+      // 发送 ContentScriptInfo
       if (cacheEntry.loading) {
         scratchAddons.localEvents.addEventListener("csInfoCacheUpdated", function thisFunction() {
           cacheEntry = getCacheEntry();
@@ -294,6 +296,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 });
 // In case a tab messaged us before we registered the event above,
 // we notify them they can resend the contentScriptInfo message
+// 万一 contentscript 的消息早于设置监听就发送了，主动通知 contentscript
 chrome.tabs.query({}, (tabs) =>
   tabs.forEach((tab) => {
     if (tab.url || (!tab.url && typeof browser !== "undefined")) {
