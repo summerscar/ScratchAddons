@@ -48,6 +48,7 @@ export default async ({ addon, console, msg }) => {
       }, 50);
     };
     addon.tab.redux.addEventListener("statechanged", onEyeDropperOpened);
+    // 通过触发取色器，设置
     element.children[1].children[0].click();
   };
 

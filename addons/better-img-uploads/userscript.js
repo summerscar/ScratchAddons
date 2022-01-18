@@ -211,7 +211,7 @@ export default async function ({ addon, console, msg }) {
         )
       );
     }
-
+    // 构造 filelist
     (el = document.getElementById(iD).nextElementSibling.querySelector("input")).files = new FileList(processed); //Convert processed image array to a FileList, which is not normally constructible.
 
     el.dispatchEvent(new e.constructor(e.type, e)); //Start a new, duplicate, event, but allow scratch to receive it this time.
